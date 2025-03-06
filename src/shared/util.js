@@ -1129,6 +1129,12 @@ function _isValidExplicitDest(validRef, validName, dest) {
   return true;
 }
 
+// TOOD: Replace all occurrences of this function with `Math.clamp` once
+//       https://github.com/tc39/proposal-math-clamp/ is generally available.
+function MathClamp(v, min, max) {
+  return Math.min(Math.max(v, min), max);
+}
+
 // TODO: Remove this once `Uint8Array.prototype.toHex` is generally available.
 function toHexUtil(arr) {
   if (Uint8Array.prototype.toHex) {
@@ -1203,6 +1209,7 @@ export {
   isNodeJS,
   LINE_DESCENT_FACTOR,
   LINE_FACTOR,
+  MathClamp,
   normalizeUnicode,
   objectFromMap,
   objectSize,
