@@ -455,16 +455,6 @@ class AnnotationEditorLayer {
     ) {
       this.#uiManager.removeDeletedAnnotationElement(editor);
     }
-
-    if (this.#eventBus) {
-      this.#eventBus.dispatch("pdfjs.annotation.editors_changed", {
-        editors: this.#editors,
-      });
-
-      this.#eventBus.dispatch("pdfjs.annotation.editor_attach", {
-        editor,
-      });
-    }
   }
 
   detach(editor) {
@@ -473,16 +463,6 @@ class AnnotationEditorLayer {
 
     if (!this.#isDisabling && editor.annotationElementId) {
       this.#uiManager.addDeletedAnnotationElement(editor);
-    }
-
-    if (this.#eventBus) {
-      this.#eventBus.dispatch("pdfjs.annotation.editors_changed", {
-        editors: this.#editors,
-      });
-
-      this.#eventBus.dispatch("pdfjs.annotation.editor_detach", {
-        editor,
-      });
     }
   }
 
@@ -495,6 +475,14 @@ class AnnotationEditorLayer {
     this.#uiManager.removeEditor(editor);
     editor.div.remove();
     editor.isAttachedToDOM = false;
+    if (this.#eventBus) {
+      this.#eventBus.dispatch("pdfjs.annotation.editors_changed", {
+        editors: this.#editors,
+      });
+      this.#eventBus.dispatch("pdfjs.annotation.editor_remove", {
+        editor,
+      });
+    }
   }
 
   /**
@@ -538,6 +526,16 @@ class AnnotationEditorLayer {
       const div = editor.render();
       this.div.append(div);
       editor.isAttachedToDOM = true;
+    }
+
+    if (this.#eventBus) {
+      this.#eventBus.dispatch("pdfjs.annotation.editors_changed", {
+        editors: this.#editors,
+      });
+
+      this.#eventBus.dispatch("pdfjs.annotation.editor_add", {
+        editor,
+      });
     }
 
     // The editor will be correctly moved into the DOM (see fixAndSetPosition).
