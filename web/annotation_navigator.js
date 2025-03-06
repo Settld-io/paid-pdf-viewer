@@ -1,6 +1,8 @@
 /** @typedef {import("./event_utils.js").EventBus} EventBus */
 /** @typedef {import("./interfaces.js").IL10n} IL10n */
 
+import editorSorter from "./sort-editor.js";
+
 /**
  * @typedef {Object} AnnotationNavigatorOptions
  * @property {HTMLDivElement} container - The container of annotation navigator.
@@ -25,6 +27,18 @@ class AnnotationNavigator {
     this.#bindListeners();
   }
 
+  #format(editor) {
+    return {
+      id: editor.id,
+      name: editor.name.replace("Editor", ""),
+      pageIndex: editor.pageIndex,
+      x: editor.x,
+      y: editor.y,
+      width: editor.width,
+      height: editor.height,
+    };
+  }
+
   #formatHTML(editor) {
     return `<li id="${editor.id}_li" class="annotationNavigatorItem">
       <h4>${editor.name}</h4>
@@ -39,17 +53,35 @@ class AnnotationNavigator {
     this.list.innerHTML = this.#editors.map(this.#formatHTML).join("");
   }
 
+  #isElementInViewport(id) {
+    const el = document.getElementById(id);
+    const rect = el?.getBoundingClientRect();
+    return (
+      rect.bottom >= 0 &&
+      rect.right >= 0 &&
+      rect.top <=
+        (window.innerHeight || document.documentElement.clientHeight) &&
+      rect.left <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+  }
+
   #bindListeners() {
     window.PDFViewerApplication.eventBus.on(
-      "pdfjs.annotation.editor_attach",
+      "pdfjs.annotation.editor_add",
       event => {
-        this.#editors.push(event.editor);
+        const index = this.#editors.findIndex(e => e.id === event.editor.id);
+        if (index === -1) {
+          this.#editors.unshift(this.#format(event.editor));
+        } else {
+          this.#editors[index] = this.#format(event.editor);
+        }
+        this.#editors = this.#editors.sort(editorSorter);
         this.#updateUI();
       }
     );
 
     window.PDFViewerApplication.eventBus.on(
-      "pdfjs.annotation.editor_detach",
+      "pdfjs.annotation.editor_remove",
       event => {
         this.#editors = this.#editors.filter(e => e.id !== event.editor.id);
         this.#updateUI();
@@ -58,13 +90,14 @@ class AnnotationNavigator {
 
     this.list.addEventListener("click", event => {
       if (event.target.nodeName === "BUTTON") {
-        console.log(event.target.dataset);
-        const pageNumber = Number(event.target.dataset.page);
-        window.PDFViewerApplication.pdfViewer.scrollPageIntoView({
-          pageNumber,
-        });
         const editorId = event.target.dataset.editor;
+        const pageNumber = Number(event.target.dataset.page);
         if (editorId) {
+          if (!this.#isElementInViewport(editorId)) {
+            window.PDFViewerApplication.pdfViewer.scrollPageIntoView({
+              pageNumber,
+            });
+          }
           setTimeout(() => {
             const targetEditor = document.getElementById(editorId);
             if (targetEditor) {
