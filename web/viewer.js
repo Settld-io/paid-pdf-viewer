@@ -270,6 +270,8 @@ function getViewerConfiguration() {
       container: document.getElementById("annotationNavigator"),
       list: document.getElementById("annotationNavigatorContent"),
       filter: document.getElementById("annotationNavigatorFilter"),
+      prev: document.getElementById("prevAnnotation"),
+      next: document.getElementById("nextAnnotation"),
     },
   };
 }

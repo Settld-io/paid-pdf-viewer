@@ -8,6 +8,8 @@ import editorSorter from "./sort-editor.js";
  * @property {HTMLDivElement} container - The container of annotation navigator.
  * @property {HTMLOListElement} list - The list of annotations elements.
  * @property {HTMLSelectElement} filter - The annotations filter element.
+ * @property {HTMLButtonElement} prev - Previous annotation button.
+ * @property {HTMLButtonElement} next - Next annotation button.
  */
 
 class AnnotationNavigator {
@@ -18,10 +20,13 @@ class AnnotationNavigator {
    * @param {EventBus} eventBus - The application event bus.
    * @param {IL10n} l10n - Localization service.
    */
-  constructor({ container, list, filter }, eventBus, l10n) {
+  constructor({ container, list, filter, prev, next }, eventBus, l10n) {
+    this.current = 0;
     this.container = container;
     this.list = list;
     this.filter = filter;
+    this.prevBtn = prev;
+    this.nextBtn = next;
     this.eventBus = eventBus;
     this.l10n = l10n;
     this.#bindListeners();
@@ -56,6 +61,7 @@ class AnnotationNavigator {
   #isElementInViewport(id) {
     const el = document.getElementById(id);
     const rect = el?.getBoundingClientRect();
+    // TODO: fix error
     return (
       rect.bottom >= 0 &&
       rect.right >= 0 &&
@@ -63,6 +69,22 @@ class AnnotationNavigator {
         (window.innerHeight || document.documentElement.clientHeight) &&
       rect.left <= (window.innerWidth || document.documentElement.clientWidth)
     );
+  }
+
+  #scrollIntoView(pageIndex, editorId) {
+    if (editorId) {
+      if (!this.#isElementInViewport(editorId)) {
+        window.PDFViewerApplication.pdfViewer.scrollPageIntoView({
+          pageNumber: pageIndex,
+        });
+      }
+      setTimeout(() => {
+        const targetEditor = document.getElementById(editorId);
+        if (targetEditor) {
+          targetEditor.focus();
+        }
+      }, 300);
+    }
   }
 
   #bindListeners() {
@@ -92,19 +114,23 @@ class AnnotationNavigator {
       if (event.target.nodeName === "BUTTON") {
         const editorId = event.target.dataset.editor;
         const pageNumber = Number(event.target.dataset.page);
-        if (editorId) {
-          if (!this.#isElementInViewport(editorId)) {
-            window.PDFViewerApplication.pdfViewer.scrollPageIntoView({
-              pageNumber,
-            });
-          }
-          setTimeout(() => {
-            const targetEditor = document.getElementById(editorId);
-            if (targetEditor) {
-              targetEditor.focus();
-            }
-          }, 300);
-        }
+        this.#scrollIntoView(pageNumber, editorId);
+      }
+    });
+
+    this.prevBtn.addEventListener("click", () => {
+      this.current = Math.max(0, this.current - 1);
+      const prevEditor = this.#editors[this.current];
+      if (prevEditor.id) {
+        this.#scrollIntoView(prevEditor.pageIndex, prevEditor.id);
+      }
+    });
+
+    this.nextBtn.addEventListener("click", () => {
+      this.current = Math.min(this.current + 1, this.#editors.length - 1);
+      const nextEditor = this.#editors[this.current];
+      if (nextEditor.id) {
+        this.#scrollIntoView(nextEditor.pageIndex, nextEditor.id);
       }
     });
   }
