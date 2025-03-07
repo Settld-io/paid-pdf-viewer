@@ -98,6 +98,7 @@
    --toolbarButton-zoomIn-icon: url(images/toolbarButton-zoomIn.svg);
    --toolbarButton-presentationMode-icon: url(images/toolbarButton-presentationMode.svg);
    --toolbarButton-print-icon: url(images/toolbarButton-print.svg);
+   --toolbarButton-toggleForm-icon: url(images/toolbarButton-toggleForm.svg);
    /*#if GENERIC*/
    --toolbarButton-openFile-icon: url(images/toolbarButton-openFile.svg);
    /*#endif*/
@@ -575,6 +576,10 @@
 
  #printButton::before {
    mask-image: var(--toolbarButton-print-icon);
+ }
+
+ #toggleFormButton::before {
+   mask-image: var(--toolbarButton-toggleForm-icon);
  }
 
  /*#if GENERIC*/
@@ -1184,24 +1189,6 @@
          /*#endif*/
          &::-moz-range-thumb {
            background-color: white;
-         }
-       }
-
-       .editorParamsSelect {
-         width: 100%;
-         height: 28px;
-         font: message-box;
-         font-size: 12px;
-         color: var(--main-color);
-         margin: 0;
-         padding-block: 1px 2px;
-         padding-inline: 6px 38px;
-         border: none;
-         outline: none;
-         background-color: var(--dropdown-btn-bg-color);
-         &:is(:hover, :focus-visible) {
-           background-color: var(--button-hover-color);
-           color: var(--toggled-btn-color);
          }
        }
      }

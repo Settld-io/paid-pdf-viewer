@@ -34,7 +34,8 @@ import { PagesCountLimit } from "./pdf_viewer.js";
  * @property {HTMLButtonElement} openFileButton - Button to open a file.
  * @property {HTMLButtonElement} printButton - Button to print the document.
  * @property {HTMLButtonElement} downloadButton - Button to download the
- *   document.
+ * @property {HTMLButtonElement} toggleFormButton - Button to enable/disable
+ * the form layer.
  * @property {HTMLAnchorElement} viewBookmarkButton - Button to obtain a
  *   bookmark link to the current location in the document.
  * @property {HTMLButtonElement} firstPageButton - Button to go to the first
@@ -72,6 +73,11 @@ class SecondaryToolbar {
       },
       { element: options.printButton, eventName: "print", close: true },
       { element: options.downloadButton, eventName: "download", close: true },
+      {
+        element: options.toggleFormButton,
+        eventName: "toggleformlayer",
+        close: false,
+      },
       { element: options.viewBookmarkButton, eventName: null, close: true },
       { element: options.firstPageButton, eventName: "firstpage", close: true },
       { element: options.lastPageButton, eventName: "lastpage", close: true },

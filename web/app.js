@@ -78,6 +78,7 @@ import { PDFCursorTools } from "web-pdf_cursor_tools";
 import { PDFDocumentProperties } from "web-pdf_document_properties";
 import { PDFFindBar } from "web-pdf_find_bar";
 import { PDFFindController } from "./pdf_find_controller.js";
+import { PDFFormLayer } from "./pdf_form_layer.js";
 import { PDFHistory } from "./pdf_history.js";
 import { PDFLayerViewer } from "web-pdf_layer_viewer";
 import { PDFOutlineViewer } from "web-pdf_outline_viewer";
@@ -712,6 +713,14 @@ const PDFViewerApplication = {
     if (appConfig.annotationNavigator) {
       this.annotationNavigator = new AnnotationNavigator(
         appConfig.annotationNavigator,
+        eventBus,
+        l10n
+      );
+    }
+
+    if (appConfig.pdfFormLayer) {
+      this.pdfFormLayer = new PDFFormLayer(
+        appConfig.pdfFormLayer,
         eventBus,
         l10n
       );
