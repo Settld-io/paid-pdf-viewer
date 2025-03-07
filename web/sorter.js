@@ -18,4 +18,4 @@ function editorSorter(a, b) {
   return a.x - b.x;
 }
 
-export default editorSorter;
+export { editorSorter };

@@ -98,6 +98,7 @@
    --toolbarButton-zoomIn-icon: url(images/toolbarButton-zoomIn.svg);
    --toolbarButton-presentationMode-icon: url(images/toolbarButton-presentationMode.svg);
    --toolbarButton-print-icon: url(images/toolbarButton-print.svg);
+   --toolbarButton-toggleForm-icon: url(images/toolbarButton-toggleForm.svg);
    /*#if GENERIC*/
    --toolbarButton-openFile-icon: url(images/toolbarButton-openFile.svg);
    /*#endif*/
@@ -575,6 +576,10 @@
 
  #printButton::before {
    mask-image: var(--toolbarButton-print-icon);
+ }
+
+ #toggleFormButton::before {
+   mask-image: var(--toolbarButton-toggleForm-icon);
  }
 
  /*#if GENERIC*/

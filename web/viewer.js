@@ -84,6 +84,7 @@ function getViewerConfiguration() {
           : null,
       printButton: document.getElementById("secondaryPrint"),
       downloadButton: document.getElementById("secondaryDownload"),
+      toggleFormButton: document.getElementById("toggleFormButton"),
       viewBookmarkButton: document.getElementById("viewBookmark"),
       firstPageButton: document.getElementById("firstPage"),
       lastPageButton: document.getElementById("lastPage"),
@@ -272,6 +273,9 @@ function getViewerConfiguration() {
       filter: document.getElementById("annotationNavigatorFilter"),
       prev: document.getElementById("prevAnnotation"),
       next: document.getElementById("nextAnnotation"),
+    },
+    pdfFormLayer: {
+      form: document.getElementById("pdfFormContainer"),
     },
   };
 }
